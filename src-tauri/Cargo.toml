@@ -1,0 +1,44 @@
+[package]
+name = "pixelimage"
+version = "0.1.0"
+description = "A Tauri-based image optimization desktop application"
+authors = ["PixelThreader"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+name = "pixelimage_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# Image processing
+image = { version = "0.25", features = ["jpeg", "png", "webp"] }
+webp = "0.3"
+rgb = "0.8"
+
+# File operations
+zip = "2.1"
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1", features = ["v4", "serde"] }
+thiserror = "1"
+base64 = "0.22"
+
+# Database & Storage
+rusqlite = { version = "0.31", features = ["bundled"] }
+sha2 = "0.10"
+hex = "0.4"
+walkdir = "2"
+
