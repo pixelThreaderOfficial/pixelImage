@@ -471,13 +471,7 @@ export function Upload() {
             )}
 
             <div className="space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Upload Images</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Browse to select images or drag and drop. Supports JPG, PNG, WebP, and AVIF.
-                    </p>
-                </div>
+
 
                 {/* Upload Errors Alert */}
                 {uploadErrors.length > 0 && (

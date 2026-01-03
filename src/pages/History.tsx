@@ -186,12 +186,7 @@ export function History() {
         <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">History</h1>
-                    <p className="text-muted-foreground mt-1">
-                        View and manage your past optimization sessions.
-                    </p>
-                </div>
+                <div></div>
                 <div className="flex gap-2">
                     {selectedIds.size > 0 && (
                         <>

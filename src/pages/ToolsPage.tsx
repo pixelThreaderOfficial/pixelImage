@@ -76,13 +76,7 @@ export function ToolsPage() {
     ];
 
     return (
-        <div className="container mx-auto p-6 space-y-8 max-w-6xl">
-            <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tight">Tools</h1>
-                <p className="text-muted-foreground text-lg">
-                    A collection of powerful utilities for all your image processing needs.
-                </p>
-            </div>
+        <div className="space-y-8">
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {tools.map((tool) => (

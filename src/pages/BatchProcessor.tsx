@@ -229,35 +229,6 @@ export function BatchProcessor() {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Tools</h1>
-                    <p className="text-muted-foreground mt-1">
-                        Configure compression, format conversion, and resize settings.
-                    </p>
-                </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" onClick={handleReset} disabled={showProcessing}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
-                        Reset
-                    </Button>
-                    <Button onClick={handleProcess} disabled={showProcessing || selectedImages.length === 0}>
-                        {showProcessing ? (
-                            <>
-                                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                Processing...
-                            </>
-                        ) : (
-                            <>
-                                <Zap className="h-4 w-4 mr-2" />
-                                Process {selectedImages.length > 0 ? `(${selectedImages.length})` : ""}
-                            </>
-                        )}
-                    </Button>
-                </div>
-            </div>
-
             {/* Real-Time Processing Progress */}
             {showProcessing && (
                 <Card className="border-primary bg-primary/5">
@@ -606,6 +577,15 @@ export function BatchProcessor() {
                         </div>
                     </div>
                     <div className="flex gap-3">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            onClick={handleReset}
+                            disabled={showProcessing}
+                        >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Reset
+                        </Button>
                         {selectedImages.length === 0 && (
                             <Button variant="outline" size="lg" onClick={() => navigate("/upload")}>
                                 Go to Upload

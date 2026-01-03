@@ -352,13 +352,7 @@ export function WebIconsGenerator() {
     };
 
     return (
-        <div className="container mx-auto p-6 space-y-6 max-w-6xl">
-            <div className="flex flex-col gap-2 relative">
-                <h1 className="text-3xl font-bold tracking-tight">Web Icons Generator</h1>
-                <p className="text-muted-foreground">
-                    Generate favicons and web icons for all devices in seconds.
-                </p>
-            </div>
+        <div className="space-y-6">
 
             {isGenerating && generationProgress && (
                 <Card className="sticky top-4 z-50 shadow-lg border-primary/20 animate-in fade-in slide-in-from-top-2">
