@@ -32,7 +32,6 @@ import { formatBytes } from "@/lib/utils";
 import { useImages } from "@/context";
 import { pickImageFiles, pickFolder } from "@/lib/file-dialog";
 import * as api from "@/lib/tauri-api";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { UploadsApi } from "@/lib/uploads-api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -324,16 +323,26 @@ export function Upload() {
                 return;
             }
 
-            const newImages = validMetadata.map((meta) => ({
-                id: meta.id,
-                name: meta.name,
-                path: meta.path,
-                size: meta.size,
-                format: meta.format,
-                width: meta.width,
-                height: meta.height,
-                preview: convertFileSrc(meta.path),
-                selected: false,
+            // Fetch thumbnails for each image
+            const newImages = await Promise.all(validMetadata.map(async (meta) => {
+                let preview = "";
+                try {
+                    preview = await api.getImageThumbnail(meta.path, 300);
+                } catch (e) {
+                    console.error("Failed to generate thumbnail for", meta.name, e);
+                }
+
+                return {
+                    id: meta.id,
+                    name: meta.name,
+                    path: meta.path,
+                    size: meta.size,
+                    format: meta.format,
+                    width: meta.width,
+                    height: meta.height,
+                    preview,
+                    selected: false,
+                };
             }));
 
             // Save to database in real-time

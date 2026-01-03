@@ -141,12 +141,20 @@ where
             .save_with_format(&favicon_path, image::ImageFormat::Ico)
             .map_err(|e| format!("Failed to save favicon.ico: {}", e))?;
 
+        // Generate base64 for favicon preview
+        let mut buffer = Cursor::new(Vec::new());
+        resized
+            .write_to(&mut buffer, image::ImageFormat::Png) // PNG is safer for browser base64 preview than ICO
+            .map_err(|e| format!("Failed to write favicon buffer: {}", e))?;
+        let base64_string = BASE64.encode(buffer.into_inner());
+        let data_url = format!("data:image/png;base64,{}", base64_string);
+
         generated_icons.push(IconResult {
             size: 32,
             path: favicon_path.to_string_lossy().to_string(),
             filename: "favicon.ico".to_string(),
             format: "ICO".to_string(),
-            base64_data: None, // Frontend can just use standard path or fetch? Or we can gen base64 for it too but ICO base64 is meh.
+            base64_data: Some(data_url),
         });
     }
 

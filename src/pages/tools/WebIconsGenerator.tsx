@@ -202,10 +202,10 @@ export function WebIconsGenerator() {
                 const filePath = selected;
                 setInputFile(filePath);
 
-                // Read as base64 for reliable preview
+                // Read as thumbnail for reliable preview
                 try {
-                    const base64Data = await readImageAsBase64(filePath);
-                    setInputPreview(`data:image/png;base64,${base64Data}`); // Assuming PNG/image mime type for valid data URL display
+                    const thumbnail = await api.getImageThumbnail(filePath, 300);
+                    setInputPreview(thumbnail);
                 } catch (e) {
                     console.error("Failed to read image preview", e);
                     toast.error("Failed to load image preview");
@@ -596,15 +596,10 @@ export function WebIconsGenerator() {
                                                                 className="max-w-full max-h-[64px] object-contain"
                                                             />
                                                         ) : (
-                                                            <img
-                                                                src={convertFileSrc(icon.path)}
-                                                                alt={`${icon.size}x${icon.size}`}
-                                                                className="max-w-full max-h-[64px] object-contain"
-                                                                onError={(e) => {
-                                                                    (e.target as HTMLImageElement).src = inputPreview || "";
-                                                                    (e.target as HTMLImageElement).style.opacity = "0.5";
-                                                                }}
-                                                            />
+                                                            <div className="h-full flex flex-col items-center justify-center text-muted-foreground opacity-50">
+                                                                <ImageIcon className="h-8 w-8 mb-1" />
+                                                                <p className="text-[10px]">Preview Unavailable</p>
+                                                            </div>
                                                         )}
                                                     </div>
                                                     <div className="text-center">
