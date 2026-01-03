@@ -296,6 +296,14 @@ export function WebIconsGenerator() {
             console.log("Generation result:", res);
             setResult(res);
 
+            // Save to history
+            try {
+                await api.saveWebIconHistory(res, inputFile, uploadId || uuidv4());
+                console.log("Web icons saved to history");
+            } catch (historyError) {
+                console.error("Failed to save to history:", historyError);
+            }
+
             // Mark upload as processed
             if (uploadId) {
                 try {

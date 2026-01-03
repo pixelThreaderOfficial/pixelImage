@@ -32,3 +32,15 @@ export async function saveFile(source: string, destination: string): Promise<voi
         destination,
     });
 }
+
+export async function saveWebIconHistory(
+    result: IconGenerationResult,
+    inputPath: string,
+    sessionId: string
+): Promise<void> {
+    return invoke("save_web_icon_history", {
+        result,
+        inputPath,
+        sessionId,
+    });
+}

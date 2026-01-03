@@ -45,6 +45,7 @@ import {
     RefreshCw,
     Eye,
     FolderOpen,
+    Download,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatBytes, formatRelativeTime } from "@/lib/utils";
@@ -148,6 +149,32 @@ export function History() {
             compression_percentage: item.compression_percentage,
         });
         setIsPreviewOpen(true);
+    };
+
+    const handleDownload = async (item: api.HistoryEntry) => {
+        try {
+            const fileName = item.output_format === "ZIP" ? "web-icons.zip" : item.file_name;
+            const ext = item.output_format === "ZIP" ? "zip" : item.output_format.toLowerCase();
+
+            const savePath = await import("@tauri-apps/plugin-dialog").then(d => d.save({
+                defaultPath: fileName,
+                filters: [{ name: item.output_format, extensions: [ext] }]
+            }));
+
+            if (savePath) {
+                // Try backup path first if available, then output path
+                const sourcePath = item.backup_path ? await api.resolveBackupPath(item.backup_path) : item.output_path;
+
+                // Use backend save_file command
+                // We need to ensure icons-api saveFile is available or use tauri-api
+                // History uses tauri-api, so I should add it there or use the one from icons-api
+                await api.saveFile(sourcePath, savePath);
+                toast.success("File downloaded successfully!");
+            }
+        } catch (e) {
+            console.error("Download error:", e);
+            toast.error("Failed to download file: " + e);
+        }
     };
 
     const totalSaved = history.reduce(
@@ -407,6 +434,15 @@ export function History() {
                                                             variant="ghost"
                                                             size="icon"
                                                             className="h-8 w-8"
+                                                            onClick={() => handleDownload(item)}
+                                                            title="Download"
+                                                        >
+                                                            <Download className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="h-8 w-8"
                                                             onClick={() => handleOpenPreview(item)}
                                                             title="Preview"
                                                         >
@@ -419,6 +455,10 @@ export function History() {
                                                                 </Button>
                                                             </DropdownMenuTrigger>
                                                             <DropdownMenuContent align="end">
+                                                                <DropdownMenuItem onClick={() => handleDownload(item)}>
+                                                                    <Download className="h-4 w-4 mr-2" />
+                                                                    Download
+                                                                </DropdownMenuItem>
                                                                 <DropdownMenuItem onClick={() => handleOpenPreview(item)}>
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     Preview

@@ -8,7 +8,8 @@ use commands::{
     delete_files, delete_upload_record, ensure_directory, generate_web_icons,
     get_all_upload_records, get_file_size, get_history, get_image_metadata, get_image_thumbnail,
     get_images_metadata, get_stats, mark_upload_processed, process_images, read_image_as_base64,
-    remove_history_entries, save_base64_image, save_file, save_upload_record,
+    remove_history_entries, resolve_backup_path, save_base64_image, save_file, save_upload_record,
+    save_web_icon_history,
 };
 use tauri::Manager;
 
@@ -40,6 +41,8 @@ pub fn run() {
             get_image_metadata,
             get_images_metadata,
             save_upload_record,
+            save_web_icon_history,
+            resolve_backup_path,
             mark_upload_processed,
             get_all_upload_records,
             delete_upload_record,

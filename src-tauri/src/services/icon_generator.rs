@@ -5,7 +5,7 @@ use std::io::Cursor;
 use std::path::Path;
 use uuid::Uuid;
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct IconResult {
     pub size: u32,
     pub path: String,
@@ -14,7 +14,7 @@ pub struct IconResult {
     pub base64_data: Option<String>,
 }
 
-#[derive(Debug, serde::Serialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct IconGenerationResult {
     pub icons: Vec<IconResult>,
     pub zip_path: String,

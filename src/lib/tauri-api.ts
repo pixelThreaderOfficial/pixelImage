@@ -65,6 +65,7 @@ export interface HistoryEntry {
     quality: number;
     input_path: string;
     output_path: string;
+    backup_path?: string;
 }
 
 export interface ProcessingStats {
@@ -76,6 +77,8 @@ export interface ProcessingStats {
 }
 
 // API Functions
+
+import { IconGenerationResult } from "./icons-api";
 
 /**
  * Get metadata for a single image
@@ -234,4 +237,29 @@ export async function saveBase64Image(base64Data: string, filename: string): Pro
  */
 export async function cleanupTempFiles(): Promise<void> {
     return invoke("cleanup_temp_files");
+}
+
+/**
+ * Resolve a backup path to a full system path
+ */
+export async function resolveBackupPath(backupPath: string): Promise<string> {
+    return invoke<string>("resolve_backup_path", { backupPath });
+}
+
+/**
+ * Save a file from source to destination
+ */
+export async function saveFile(source: string, destination: string): Promise<void> {
+    return invoke("save_file", { source, destination });
+}
+
+/**
+ * Save web icon history
+ */
+export async function saveWebIconHistory(
+    result: IconGenerationResult,
+    inputPath: string,
+    sessionId: string
+): Promise<void> {
+    return invoke("save_web_icon_history", { result, inputPath, sessionId });
 }

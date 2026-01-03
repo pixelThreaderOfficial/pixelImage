@@ -66,3 +66,18 @@ pub fn get_stats(db: State<DatabaseManager>) -> Result<ProcessingStats, String> 
         format_distribution,
     })
 }
+
+/// Resolve a backup path to a full path
+#[tauri::command]
+pub fn resolve_backup_path(backup_path: String) -> Result<String, String> {
+    let files_dir = crate::storage::path_resolver::PathResolver::files_dir();
+    // backup_path is "files/hash.ext", we need to resolve it to the full path
+    // If it starts with "files/", we replace it with the files_dir path
+    if backup_path.starts_with("files/") {
+        let relative = backup_path.strip_prefix("files/").unwrap();
+        let full_path = files_dir.join(relative);
+        Ok(full_path.to_string_lossy().to_string())
+    } else {
+        Err("Invalid backup path format".to_string())
+    }
+}
