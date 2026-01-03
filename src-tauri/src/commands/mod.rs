@@ -1,6 +1,7 @@
 pub mod compress;
 pub mod convert;
 pub mod history;
+pub mod icons;
 pub mod preview;
 pub mod settings;
 pub mod temp;
@@ -11,6 +12,7 @@ pub mod zip;
 pub use compress::*;
 pub use convert::*;
 pub use history::*;
+pub use icons::*;
 pub use preview::*;
 pub use settings::*;
 pub use temp::*;

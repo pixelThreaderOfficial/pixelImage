@@ -2,10 +2,12 @@ import {
     createContext,
     useContext,
     useState,
+    useEffect,
     useCallback,
     ReactNode,
 } from "react";
 import * as api from "@/lib/tauri-api";
+import { SettingsApi } from "@/lib/settings-api";
 import { toast } from "sonner";
 
 // Types
@@ -76,6 +78,33 @@ export function ImageProvider({ children }: { children: ReactNode }) {
     const [settings, setSettings] = useState<ProcessingSettings>(defaultSettings);
     const [outputDirectory, setOutputDirectory] = useState("");
 
+    // Load settings from DB on mount
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                // Load processing settings
+                const savedSettingsStr = await SettingsApi.getSetting("processing_settings");
+                if (savedSettingsStr) {
+                    try {
+                        const savedSettings = JSON.parse(savedSettingsStr);
+                        setSettings(prev => ({ ...prev, ...savedSettings }));
+                    } catch (e) {
+                        console.error("Failed to parse saved settings", e);
+                    }
+                }
+
+                // Load output directory
+                const savedOutputDir = await SettingsApi.getSetting("output_directory");
+                if (savedOutputDir) {
+                    setOutputDirectory(savedOutputDir);
+                }
+            } catch (e) {
+                console.error("Failed to load settings from DB", e);
+            }
+        };
+        loadSettings();
+    }, []);
+
     // Computed
     const selectedCount = uploadedImages.filter((img) => img.selected).length;
 
@@ -113,11 +142,31 @@ export function ImageProvider({ children }: { children: ReactNode }) {
 
     // Settings
     const updateSettings = useCallback(
-        (newSettings: Partial<ProcessingSettings>) => {
-            setSettings((prev) => ({ ...prev, ...newSettings }));
+        async (newSettings: Partial<ProcessingSettings>) => {
+            setSettings((prev) => {
+                const updated = { ...prev, ...newSettings };
+                // Persist to DB
+                SettingsApi.setSetting("processing_settings", JSON.stringify(updated))
+                    .then(() => toast.success("Settings saved"))
+                    .catch(e => {
+                        console.error("Failed to save settings", e);
+                        toast.error("Failed to save settings");
+                    });
+                return updated;
+            });
         },
         []
     );
+
+    const setOutputDirectoryWrapper = useCallback(async (path: string) => {
+        setOutputDirectory(path);
+        try {
+            await SettingsApi.setSetting("output_directory", path);
+        } catch (e) {
+            console.error("Failed to save output directory", e);
+        }
+    }, []);
+
 
     // Processing - REAL Tauri API call
     const processImages = useCallback(async (): Promise<api.ProcessResponse | null> => {
@@ -206,7 +255,7 @@ export function ImageProvider({ children }: { children: ReactNode }) {
                 updateSettings,
                 processImages,
                 outputDirectory,
-                setOutputDirectory,
+                setOutputDirectory: setOutputDirectoryWrapper,
             }}
         >
             {children}

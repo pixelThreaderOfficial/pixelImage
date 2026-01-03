@@ -32,6 +32,7 @@ import { formatBytes } from "@/lib/utils";
 import { useImages } from "@/context";
 import { pickImageFiles, pickFolder } from "@/lib/file-dialog";
 import * as api from "@/lib/tauri-api";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { UploadsApi } from "@/lib/uploads-api";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -331,7 +332,7 @@ export function Upload() {
                 format: meta.format,
                 width: meta.width,
                 height: meta.height,
-                preview: "",
+                preview: convertFileSrc(meta.path),
                 selected: false,
             }));
 

@@ -26,5 +26,13 @@ export const SettingsApi = {
 
     exportData: async (targetPath: string): Promise<void> => {
         return await invoke('export_data', { targetPath });
+    },
+
+    exportSettingsJson: async (targetPath: string): Promise<void> => {
+        return await invoke('export_settings_json', { targetPath });
+    },
+
+    importSettingsJson: async (path: string): Promise<void> => {
+        return await invoke('import_settings_json', { path });
     }
 };

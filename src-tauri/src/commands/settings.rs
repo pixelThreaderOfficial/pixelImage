@@ -28,3 +28,30 @@ pub async fn export_data(target_path: String) -> Result<(), String> {
 
     Ok(())
 }
+
+#[tauri::command]
+pub async fn export_settings_json(
+    _app: tauri::AppHandle,
+    db: State<'_, DatabaseManager>,
+    target_path: String,
+) -> Result<(), String> {
+    let settings = SettingsService::get_all_settings(&db)?;
+    let json_string = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
+
+    fs::write(&target_path, json_string).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn import_settings_json(
+    _app: tauri::AppHandle,
+    db: State<'_, DatabaseManager>,
+    path: String,
+) -> Result<(), String> {
+    let json_content = fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    let settings: std::collections::HashMap<String, String> =
+        serde_json::from_str(&json_content).map_err(|e| e.to_string())?;
+
+    SettingsService::import_settings(&db, settings)?;
+    Ok(())
+}

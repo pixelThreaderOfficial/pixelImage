@@ -18,7 +18,6 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     AlertDialog,
@@ -32,14 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
     Settings2,
-    Moon,
-    Sun,
-    FolderOutput,
     Download,
-    Loader2,
-    Shield,
-    Zap,
-    FileImage,
     Palette,
     Database,
     AlertTriangle,
@@ -47,6 +39,7 @@ import {
     Image as ImageIcon,
     CircleCheck,
     Info,
+    Upload,
 } from "lucide-react";
 import { SettingsApi } from "@/lib/settings-api";
 import { useTheme } from "next-themes";
@@ -58,7 +51,7 @@ import { pickFolder } from "@/lib/file-dialog";
 // But wait, in previous steps I decided to pass targetPath to exportData. 
 // I'll use save from tauri-plugin-dialog if available in frontend or just implement a specific save helper.
 // Actually, let's just use @tauri-apps/plugin-dialog save directly here or rely on what's available.
-import { save } from '@tauri-apps/plugin-dialog';
+import { save, open } from '@tauri-apps/plugin-dialog';
 import { toast } from "sonner";
 
 export function Settings() {
@@ -71,12 +64,19 @@ export function Settings() {
     const [disableConsent, setDisableConsent] = useState(false);
 
     // load backup setting - default to true if not set
+    // load backup setting and theme - default to true if not set
     useEffect(() => {
         SettingsApi.getBackupEnabled().then((enabled) => {
             // If no setting exists, default to true
             setBackupEnabled(enabled ?? true);
         });
-    }, []);
+
+        SettingsApi.getSetting("theme").then((savedTheme) => {
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        });
+    }, [setTheme]);
 
     const handleBackupToggle = async (checked: boolean) => {
         if (checked) {
@@ -103,7 +103,9 @@ export function Settings() {
         setDisableConsent(false);
     };
 
-    const handleExportData = async () => {
+    const [importing, setImporting] = useState(false);
+
+    const handleExportAllData = async () => {
         try {
             const path = await save({
                 filters: [{
@@ -115,10 +117,10 @@ export function Settings() {
 
             if (path) {
                 setExporting(true);
-                toast.loading("Exporting data...");
+                toast.loading("Exporting all data...");
                 await SettingsApi.exportData(path);
                 toast.dismiss();
-                toast.success("Data exported successfully!");
+                toast.success("All data exported successfully!");
             }
         } catch (error) {
             console.error(error);
@@ -126,6 +128,65 @@ export function Settings() {
             toast.error("Failed to export data");
         } finally {
             setExporting(false);
+        }
+    };
+
+    const handleExportAppConfig = async () => {
+        try {
+            const path = await save({
+                filters: [{
+                    name: 'JSON Config',
+                    extensions: ['json']
+                }],
+                defaultPath: 'pixelimage_config.json',
+            });
+
+            if (path) {
+                setExporting(true);
+                toast.loading("Exporting app config...");
+                await SettingsApi.exportSettingsJson(path);
+                toast.dismiss();
+                toast.success("App configuration exported!");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.dismiss();
+            toast.error("Failed to export config");
+        } finally {
+            setExporting(false);
+        }
+    };
+
+    const handleImportAppConfig = async () => {
+        try {
+            const selected = await open({
+                multiple: false,
+                filters: [{
+                    name: 'JSON Config',
+                    extensions: ['json']
+                }]
+            });
+
+            if (selected && typeof selected === 'string') {
+                setImporting(true);
+                toast.loading("Importing app config...");
+
+                await SettingsApi.importSettingsJson(selected);
+
+                toast.dismiss();
+                toast.success("Configuration imported! Restarting...");
+
+                // Reload window to apply settings
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1500);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.dismiss();
+            toast.error("Failed to import config");
+        } finally {
+            setImporting(false);
         }
     };
 
@@ -183,7 +244,11 @@ export function Settings() {
                                 Select your preferred color scheme
                             </p>
                         </div>
-                        <Select value={theme} onValueChange={setTheme}>
+                        <Select value={theme} onValueChange={(val) => {
+                            setTheme(val);
+                            SettingsApi.setSetting("theme", val);
+                            toast.success("Theme saved");
+                        }}>
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="Select theme" />
                             </SelectTrigger>
@@ -402,16 +467,49 @@ export function Settings() {
                         <div className="space-y-0.5">
                             <Label className="text-base">Export Data</Label>
                             <p className="text-sm text-muted-foreground">
-                                Export all settings, history, and backups as a ZIP file
+                                Export your data or configuration
                             </p>
                         </div>
-                        <Button variant="outline" onClick={handleExportData} disabled={exporting}>
-                            {exporting ? (
-                                <span className="animate-pulse">Exporting...</span>
+                        <div className="flex gap-2">
+                            <Button variant="outline" onClick={handleExportAllData} disabled={exporting}>
+                                {exporting ? (
+                                    <span className="animate-pulse">...</span>
+                                ) : (
+                                    <>
+                                        <Database className="h-4 w-4 mr-2" />
+                                        All Data (ZIP)
+                                    </>
+                                )}
+                            </Button>
+                            <Button variant="outline" onClick={handleExportAppConfig} disabled={exporting}>
+                                {exporting ? (
+                                    <span className="animate-pulse">...</span>
+                                ) : (
+                                    <>
+                                        <Download className="h-4 w-4 mr-2" />
+                                        App Config (JSON)
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    </div>
+
+                    <Separator />
+
+                    <div className="flex items-center justify-between">
+                        <div className="space-y-0.5">
+                            <Label className="text-base">Import Config</Label>
+                            <p className="text-sm text-muted-foreground">
+                                Restore settings from a .json file
+                            </p>
+                        </div>
+                        <Button variant="outline" onClick={handleImportAppConfig} disabled={importing}>
+                            {importing ? (
+                                <span className="animate-pulse">Importing...</span>
                             ) : (
                                 <>
-                                    <Download className="h-4 w-4 mr-2" />
-                                    Export to ZIP
+                                    <Upload className="h-4 w-4 mr-2" />
+                                    Import Config
                                 </>
                             )}
                         </Button>
