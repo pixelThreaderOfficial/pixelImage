@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-export function Tools() {
+export function ToolsPage() {
     const tools = [
         {
             title: "Batch Optimizer",
@@ -112,7 +112,7 @@ export function Tools() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 transition-transform duration-300">
+                                <div className="flex items-center text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-all -translate-x-2 group-hover:translate-x-0 duration-300">
                                     Open Tool <ArrowRight className="ml-1 h-4 w-4" />
                                 </div>
                             </CardContent>

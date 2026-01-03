@@ -20,7 +20,7 @@ impl PathResolver {
     }
 
     /// Get the data directory (for database)
-    pub fn data_dir() -> PathBuf {
+    pub fn _data_dir() -> PathBuf {
         Self::app_data_dir().join("data")
     }
 

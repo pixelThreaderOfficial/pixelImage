@@ -14,7 +14,7 @@ pub use convert::*;
 pub use history::*;
 pub use icons::*;
 pub use preview::*;
-pub use settings::*;
+// pub use settings::*;
 pub use temp::*;
 pub use upload::*;
 pub use uploads::*;

@@ -5,11 +5,10 @@ mod storage;
 
 use commands::{
     cleanup_temp_files, clear_history, compress_image, convert_image, convert_images, create_zip,
-    delete_files, delete_upload_record, ensure_directory, export_data, generate_web_icons,
-    get_all_upload_records, get_app_setting, get_file_size, get_history, get_image_metadata,
-    get_image_thumbnail, get_images_metadata, get_stats, mark_upload_processed, process_images,
-    read_image_as_base64, remove_history_entries, save_base64_image, save_file, save_upload_record,
-    set_app_setting,
+    delete_files, delete_upload_record, ensure_directory, generate_web_icons,
+    get_all_upload_records, get_file_size, get_history, get_image_metadata, get_image_thumbnail,
+    get_images_metadata, get_stats, mark_upload_processed, process_images, read_image_as_base64,
+    remove_history_entries, save_base64_image, save_file, save_upload_record,
 };
 use tauri::Manager;
 

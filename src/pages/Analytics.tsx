@@ -335,7 +335,7 @@ export function Analytics() {
                                     </div>
                                 ) : (
                                     <>
-                                        <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-green-500/10 to-green-500/5 border border-green-500/20">
+                                        <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-r from-green-500/10 to-green-500/5 border border-green-500/20">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded-lg bg-green-500/20 flex items-center justify-center">
                                                     <Zap className="h-5 w-5 text-green-600 dark:text-green-400" />
@@ -350,7 +350,7 @@ export function Analytics() {
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-blue-500/10 to-blue-500/5 border border-blue-500/20">
+                                        <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-r from-blue-500/10 to-blue-500/5 border border-blue-500/20">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                                                     <TrendingDown className="h-5 w-5 text-blue-600 dark:text-blue-400" />
@@ -365,7 +365,7 @@ export function Analytics() {
                                             </span>
                                         </div>
 
-                                        <div className="flex items-center justify-between p-4 rounded-lg bg-gradient-to-r from-purple-500/10 to-purple-500/5 border border-purple-500/20">
+                                        <div className="flex items-center justify-between p-4 rounded-lg bg-linear-to-r from-purple-500/10 to-purple-500/5 border border-purple-500/20">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-10 w-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
                                                     <FileImage className="h-5 w-5 text-purple-600 dark:text-purple-400" />

@@ -433,14 +433,14 @@ export function Upload() {
             {/* Full-Screen Global Drag Overlay */}
             {isDragging && (
                 <div
-                    className="fixed inset-0 z-[9999] bg-background/90 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-200"
+                    className="fixed inset-0 z-9999 bg-background/90 backdrop-blur-md flex items-center justify-center animate-in fade-in duration-200"
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                 >
                     <div className="flex flex-col items-center gap-8 text-center max-w-lg px-8">
                         {/* Animated Icon */}
                         <div className="relative">
-                            <div className="h-32 w-32 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-dashed border-primary animate-pulse">
+                            <div className="h-32 w-32 rounded-3xl bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center border-2 border-dashed border-primary animate-pulse">
                                 <ChefHat className="h-16 w-16 text-primary animate-bounce" />
                             </div>
                             <div className="absolute -top-2 -right-2 h-8 w-8 rounded-full bg-primary flex items-center justify-center">
@@ -567,7 +567,6 @@ export function Upload() {
                     </CardContent>
                 </Card>
 
-                {/* Drop Zone */}
                 <Card
                     className={cn(
                         "relative border-2 border-dashed transition-all duration-200",

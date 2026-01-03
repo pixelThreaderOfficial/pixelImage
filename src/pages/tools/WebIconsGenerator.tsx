@@ -30,11 +30,10 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { open } from "@tauri-apps/plugin-dialog";
-import { convertFileSrc } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import { useImages } from "@/context";
 import { generateWebIcons, saveFile, type IconGenerationResult } from "@/lib/icons-api";
-import { readImageAsBase64, getImageMetadata } from "@/lib/tauri-api";
+import * as api from "@/lib/tauri-api";
 import { UploadsApi } from "@/lib/uploads-api";
 import { SettingsApi } from "@/lib/settings-api";
 import { v4 as uuidv4 } from "uuid";
@@ -213,7 +212,7 @@ export function WebIconsGenerator() {
 
                 // Record the upload
                 try {
-                    const metadata = await getImageMetadata(filePath);
+                    const metadata = await api.getImageMetadata(filePath);
                     const newUploadId = uuidv4();
                     await UploadsApi.saveUploadRecord({
                         id: newUploadId,
