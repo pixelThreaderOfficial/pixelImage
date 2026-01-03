@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 import {
     Select,
     SelectContent,
@@ -512,25 +513,61 @@ export function Settings() {
             </Card>
 
             {/* About */}
-            <Card>
+            <Card className="border-primary/20 overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
+                    <Info className="h-32 w-32" />
+                </div>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                        <Info className="h-5 w-5" />
-                        About
+                        <Info className="h-5 w-5 text-primary" />
+                        About pixelImage
                     </CardTitle>
+                    <CardDescription>
+                        The professional image processing suite for developers
+                    </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between py-2">
-                        <span className="text-muted-foreground">Version</span>
-                        <span className="font-mono">0.1.0</span>
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                        <span className="text-muted-foreground">Framework</span>
-                        <span className="font-mono">Tauri v2</span>
-                    </div>
-                    <div className="flex items-center justify-between py-2">
-                        <span className="text-muted-foreground">UI</span>
-                        <span className="font-mono">React + ShadCN</span>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between py-2 border-b border-muted transition-colors hover:border-primary/50">
+                                <span className="text-muted-foreground flex items-center gap-2">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    Version
+                                </span>
+                                <Badge variant="secondary" className="font-mono">1.0.0</Badge>
+                            </div>
+                            <div className="flex items-center justify-between py-2 border-b border-muted transition-colors hover:border-primary/50">
+                                <span className="text-muted-foreground flex items-center gap-2">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    Last Updated
+                                </span>
+                                <span className="font-medium text-sm">Jan 04, 2026</span>
+                            </div>
+                        </div>
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between py-2 border-b border-muted transition-colors hover:border-primary/50">
+                                <span className="text-muted-foreground flex items-center gap-2">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    Developer
+                                </span>
+                                <span className="font-bold text-primary">pixelThreader</span>
+                            </div>
+                            <div className="flex items-center justify-between py-2 border-b border-muted transition-colors hover:border-primary/50">
+                                <span className="text-muted-foreground flex items-center gap-2">
+                                    <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                                    Website
+                                </span>
+                                <a
+                                    href="https://pixelthreader.in"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-primary hover:underline font-medium text-sm flex items-center gap-1"
+                                >
+                                    pixelthreader.in
+                                    <span className="text-[10px] opacity-70">↗</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </CardContent>
             </Card>

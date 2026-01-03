@@ -1,5 +1,5 @@
 import { open, save } from "@tauri-apps/plugin-dialog";
-import { BaseDirectory, readDir, exists, mkdir } from "@tauri-apps/plugin-fs";
+import { readDir, exists, mkdir } from "@tauri-apps/plugin-fs";
 
 /**
  * Open file picker dialog for images
