@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider, Layout } from "@/components/layout";
 import { ImageProvider } from "@/context";
 import { Toaster } from "@/components/ui/sonner";
-import { Dashboard, Upload, Tools, BatchProcessor, WebIconsGenerator, Analytics, History, Settings } from "@/pages";
+import { Dashboard, Upload, Tools, BatchProcessor, WebIconsGenerator, FormatConverter, ImageCompressor, ImageResizer, SmartScaler, ImageScraper, Analytics, History, Settings } from "@/pages";
 
 function App() {
   return (
@@ -16,6 +16,11 @@ function App() {
               <Route path="/tools" element={<Tools />} />
               <Route path="/tools/batch" element={<BatchProcessor />} />
               <Route path="/tools/web-icons" element={<WebIconsGenerator />} />
+              <Route path="/tools/converter" element={<FormatConverter />} />
+              <Route path="/tools/compressor" element={<ImageCompressor />} />
+              <Route path="/tools/resizer" element={<ImageResizer />} />
+              <Route path="/tools/scaler" element={<SmartScaler />} />
+              <Route path="/tools/scraper" element={<ImageScraper />} />
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/history" element={<History />} />
               <Route path="/settings" element={<Settings />} />

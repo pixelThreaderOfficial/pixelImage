@@ -32,6 +32,7 @@ export interface ProcessingSettings {
     maxHeight: number;
     aspectLocked: boolean;
     preserveMetadata: boolean;
+    saveMode: "photos" | "zip";
 }
 
 interface ImageContextType {
@@ -55,6 +56,8 @@ interface ImageContextType {
     // Output
     outputDirectory: string;
     setOutputDirectory: (path: string) => void;
+    saveMode: "photos" | "zip";
+    setSaveMode: (mode: "photos" | "zip") => void;
 }
 
 const defaultSettings: ProcessingSettings = {
@@ -66,6 +69,7 @@ const defaultSettings: ProcessingSettings = {
     maxHeight: 1080,
     aspectLocked: true,
     preserveMetadata: false,
+    saveMode: "photos",
 };
 
 const ImageContext = createContext<ImageContextType | undefined>(undefined);
@@ -167,6 +171,10 @@ export function ImageProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
+    const setSaveMode = useCallback(async (mode: "photos" | "zip") => {
+        updateSettings({ saveMode: mode });
+    }, [updateSettings]);
+
 
     // Processing - REAL Tauri API call
     const processImages = useCallback(async (): Promise<api.ProcessResponse | null> => {
@@ -256,6 +264,8 @@ export function ImageProvider({ children }: { children: ReactNode }) {
                 processImages,
                 outputDirectory,
                 setOutputDirectory: setOutputDirectoryWrapper,
+                saveMode: settings.saveMode,
+                setSaveMode,
             }}
         >
             {children}

@@ -37,6 +37,8 @@ import * as api from "@/lib/tauri-api";
 import { UploadsApi } from "@/lib/uploads-api";
 import { SettingsApi } from "@/lib/settings-api";
 import { v4 as uuidv4 } from "uuid";
+import { useLocation } from "react-router-dom";
+import { SelectedImagesAlert } from "@/components/SelectedImagesAlert";
 
 interface PresetGroup {
     id: string;
@@ -96,6 +98,8 @@ export function WebIconsGenerator() {
     const [result, setResult] = useState<IconGenerationResult | null>(null);
     const [copied, setCopied] = useState(false);
     const [uploadId, setUploadId] = useState<string | null>(null);
+    const location = useLocation();
+    const fromUpload = location.state?.fromUpload;
 
     useEffect(() => {
         let unlisten: (() => void) | undefined;
@@ -135,7 +139,7 @@ export function WebIconsGenerator() {
 
     // Effect to pick selected image from context if none selected locally
     useEffect(() => {
-        if (!inputFile && uploadedImages.length > 0) {
+        if (fromUpload && !inputFile && uploadedImages.length > 0) {
             const selected = uploadedImages.find(img => img.selected);
             if (selected && selected.path) {
                 setInputFile(selected.path);
@@ -146,7 +150,7 @@ export function WebIconsGenerator() {
                 setGenerationProgress(null);
             }
         }
-    }, [inputFile, uploadedImages]);
+    }, [inputFile, uploadedImages, fromUpload]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -353,6 +357,7 @@ export function WebIconsGenerator() {
 
     return (
         <div className="space-y-6">
+            <SelectedImagesAlert />
 
             {isGenerating && generationProgress && (
                 <Card className="sticky top-4 z-50 shadow-lg border-primary/20 animate-in fade-in slide-in-from-top-2">

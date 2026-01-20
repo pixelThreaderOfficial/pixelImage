@@ -205,6 +205,13 @@ export async function ensureDirectory(path: string): Promise<void> {
 }
 
 /**
+ * Delete a directory and all its contents
+ */
+export async function deleteDirectory(path: string): Promise<void> {
+    return invoke("delete_directory", { path });
+}
+
+/**
  * Get file size
  */
 export async function getFileSize(path: string): Promise<number> {
@@ -253,6 +260,7 @@ export async function saveFile(source: string, destination: string): Promise<voi
     return invoke("save_file", { source, destination });
 }
 
+
 /**
  * Save web icon history
  */
@@ -262,4 +270,15 @@ export async function saveWebIconHistory(
     sessionId: string
 ): Promise<void> {
     return invoke("save_web_icon_history", { result, inputPath, sessionId });
+}
+
+/**
+ * Get directory name from path
+ */
+export async function getDirName(path: string): Promise<string> {
+    // Basic string manipulation for now, or use tauri path API if exposed
+    // Assuming Windows paths since user is on Windows
+    const lastSlash = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+    if (lastSlash === -1) return ".";
+    return path.substring(0, lastSlash);
 }

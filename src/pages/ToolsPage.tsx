@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
     LayoutGrid,
     Layers,
@@ -7,6 +7,7 @@ import {
     Maximize2,
     Wand2,
     ArrowRight,
+    Search,
 } from "lucide-react";
 import {
     Card,
@@ -18,6 +19,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 export function ToolsPage() {
+    const location = useLocation();
+    const fromUpload = location.state?.fromUpload;
+
     const tools = [
         {
             title: "Batch Optimizer",
@@ -44,7 +48,7 @@ export function ToolsPage() {
             href: "/tools/converter",
             color: "text-green-500",
             bgColor: "bg-green-500/10",
-            status: "coming-soon",
+            status: "ready", // Enable the tool
         },
         {
             title: "Image Compressor",
@@ -53,7 +57,7 @@ export function ToolsPage() {
             href: "/tools/compressor",
             color: "text-orange-500",
             bgColor: "bg-orange-500/10",
-            status: "coming-soon",
+            status: "ready",
         },
         {
             title: "Image Resizer",
@@ -62,7 +66,7 @@ export function ToolsPage() {
             href: "/tools/resizer",
             color: "text-pink-500",
             bgColor: "bg-pink-500/10",
-            status: "coming-soon",
+            status: "ready",
         },
         {
             title: "Smart Scaler",
@@ -71,7 +75,16 @@ export function ToolsPage() {
             href: "/tools/scaler",
             color: "text-indigo-500",
             bgColor: "bg-indigo-500/10",
-            status: "coming-soon",
+            status: "ready",
+        },
+        {
+            title: "Image Scraper",
+            description: "Automatically scrape and extract all images from any website URL.",
+            icon: <Search className="h-6 w-6" />,
+            href: "/tools/scraper",
+            color: "text-blue-500",
+            bgColor: "bg-blue-500/10",
+            status: "new",
         },
     ];
 
@@ -83,6 +96,7 @@ export function ToolsPage() {
                     <Link
                         key={tool.title}
                         to={tool.status === "coming-soon" ? "#" : tool.href}
+                        state={{ fromUpload }}
                         className={tool.status === "coming-soon" ? "cursor-not-allowed opacity-60" : ""}
                     >
                         <Card className="h-full transition-all hover:shadow-md hover:border-primary/50 group relative overflow-hidden">

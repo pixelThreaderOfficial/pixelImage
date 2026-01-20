@@ -23,3 +23,8 @@ pub fn ensure_directory(path: String) -> Result<(), String> {
 pub fn get_file_size(path: String) -> Result<u64, String> {
     services::get_file_size(&path)
 }
+/// Delete a directory and all its contents
+#[tauri::command]
+pub fn delete_directory(path: String) -> Result<(), String> {
+    std::fs::remove_dir_all(path).map_err(|e| e.to_string())
+}

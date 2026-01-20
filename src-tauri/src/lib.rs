@@ -5,11 +5,11 @@ mod storage;
 
 use commands::{
     cleanup_temp_files, clear_history, compress_image, convert_image, convert_images, create_zip,
-    delete_files, delete_upload_record, ensure_directory, generate_web_icons,
-    get_all_upload_records, get_file_size, get_history, get_image_metadata, get_image_thumbnail,
-    get_images_metadata, get_stats, mark_upload_processed, process_images, read_image_as_base64,
-    remove_history_entries, resolve_backup_path, save_base64_image, save_file, save_upload_record,
-    save_web_icon_history,
+    delete_directory, delete_files, delete_upload_record, download_images, download_images_as_zip,
+    ensure_directory, fetch_html, fetch_html_with_js, generate_web_icons, get_all_upload_records,
+    get_file_size, get_history, get_image_metadata, get_image_thumbnail, get_images_metadata,
+    get_stats, mark_upload_processed, process_images, read_image_as_base64, remove_history_entries,
+    resolve_backup_path, save_base64_image, save_file, save_upload_record, save_web_icon_history,
 };
 use tauri::Manager;
 
@@ -62,6 +62,7 @@ pub fn run() {
             delete_files,
             ensure_directory,
             get_file_size,
+            delete_directory,
             // Preview
             read_image_as_base64,
             get_image_thumbnail,
@@ -77,6 +78,11 @@ pub fn run() {
             // Icons
             generate_web_icons,
             save_file,
+            // Scraper
+            fetch_html,
+            fetch_html_with_js,
+            download_images,
+            download_images_as_zip,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

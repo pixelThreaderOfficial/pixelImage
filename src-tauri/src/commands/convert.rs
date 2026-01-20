@@ -13,6 +13,10 @@ pub fn convert_image(
         "jpeg" | "jpg" => OutputFormat::Jpeg,
         "png" => OutputFormat::Png,
         "webp" => OutputFormat::WebP,
+        "avif" => OutputFormat::Avif,
+        "tiff" | "tif" => OutputFormat::Tiff,
+        "bmp" => OutputFormat::Bmp,
+        "ico" => OutputFormat::Ico,
         _ => return Err(format!("Unsupported format: {}", format)),
     };
 
@@ -37,6 +41,10 @@ pub fn convert_images(
         "jpeg" | "jpg" => OutputFormat::Jpeg,
         "png" => OutputFormat::Png,
         "webp" => OutputFormat::WebP,
+        "avif" => OutputFormat::Avif,
+        "tiff" | "tif" => OutputFormat::Tiff,
+        "bmp" => OutputFormat::Bmp,
+        "ico" => OutputFormat::Ico,
         _ => return vec![Err(format!("Unsupported format: {}", format))],
     };
 

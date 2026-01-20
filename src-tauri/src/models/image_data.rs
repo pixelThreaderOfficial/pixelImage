@@ -42,6 +42,7 @@ pub struct ProcessingSettings {
     pub max_height: Option<u32>,
     pub preserve_aspect_ratio: bool,
     pub preserve_metadata: bool,
+    pub rename_suffix: Option<String>,
 }
 
 impl Default for ProcessingSettings {
@@ -55,6 +56,7 @@ impl Default for ProcessingSettings {
             max_height: None,
             preserve_aspect_ratio: true,
             preserve_metadata: false,
+            rename_suffix: Some("_optimized".to_string()),
         }
     }
 }
@@ -67,7 +69,10 @@ pub enum OutputFormat {
     Jpeg,
     Png,
     WebP,
-    // Note: AVIF requires additional setup with ravif crate
+    Avif,
+    Tiff,
+    Bmp,
+    Ico,
 }
 
 impl OutputFormat {
@@ -77,6 +82,10 @@ impl OutputFormat {
             OutputFormat::Jpeg => "jpg",
             OutputFormat::Png => "png",
             OutputFormat::WebP => "webp",
+            OutputFormat::Avif => "avif",
+            OutputFormat::Tiff => "tiff",
+            OutputFormat::Bmp => "bmp",
+            OutputFormat::Ico => "ico",
         }
     }
 
@@ -85,6 +94,10 @@ impl OutputFormat {
             "jpg" | "jpeg" => OutputFormat::Jpeg,
             "png" => OutputFormat::Png,
             "webp" => OutputFormat::WebP,
+            "avif" => OutputFormat::Avif,
+            "tiff" | "tif" => OutputFormat::Tiff,
+            "bmp" => OutputFormat::Bmp,
+            "ico" => OutputFormat::Ico,
             _ => OutputFormat::Original,
         }
     }

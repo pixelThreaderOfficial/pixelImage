@@ -404,7 +404,7 @@ export function Upload() {
             toast.error("Please select an output directory first");
             return;
         }
-        navigate("/tools");
+        navigate("/tools", { state: { fromUpload: true } });
     };
 
     const handleOpenPreview = (image: typeof uploadedImages[0], e: React.MouseEvent) => {

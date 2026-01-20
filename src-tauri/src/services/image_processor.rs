@@ -15,6 +15,31 @@ fn get_format_string(path: &Path) -> String {
         .unwrap_or_else(|| "UNKNOWN".to_string())
 }
 
+/// Generates a unique path by appending a count if the file already exists
+fn get_unique_path(path: &Path) -> std::path::PathBuf {
+    if !path.exists() {
+        return path.to_path_buf();
+    }
+
+    let parent = path.parent().unwrap_or_else(|| Path::new(""));
+    let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("file");
+    let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
+
+    let mut count = 1;
+    loop {
+        let new_filename = if ext.is_empty() {
+            format!("{} ({})", stem, count)
+        } else {
+            format!("{} ({}).{}", stem, count, ext)
+        };
+        let new_path = parent.join(new_filename);
+        if !new_path.exists() {
+            return new_path;
+        }
+        count += 1;
+    }
+}
+
 /// Extract metadata from an image file
 pub fn get_image_metadata(path: &str) -> Result<ImageMetadata, String> {
     let path = Path::new(path);
@@ -93,8 +118,20 @@ pub fn process_image(
         .and_then(|s| s.to_str())
         .unwrap_or("output");
 
-    let output_filename = format!("{}_optimized.{}", stem, output_format.extension());
-    let output_path = Path::new(output_dir).join(&output_filename);
+    let suffix = settings.rename_suffix.as_deref().unwrap_or("");
+    let extension = if output_format == OutputFormat::Original {
+        input_path
+            .extension()
+            .and_then(|e| e.to_str())
+            .unwrap_or("bin")
+    } else {
+        output_format.extension()
+    };
+
+    let output_filename = format!("{}{}.{}", stem, suffix, extension);
+
+    let initial_output_path = Path::new(output_dir).join(&output_filename);
+    let output_path = get_unique_path(&initial_output_path);
 
     // Ensure output directory exists
     if let Some(parent) = output_path.parent() {
@@ -164,6 +201,10 @@ fn save_compressed_image(
         OutputFormat::Jpeg => save_jpeg(img, output_path, settings.quality),
         OutputFormat::Png => save_png(img, output_path),
         OutputFormat::WebP => save_webp(img, output_path, settings.quality, settings.lossless),
+        OutputFormat::Avif => save_avif(img, output_path),
+        OutputFormat::Tiff => save_tiff(img, output_path),
+        OutputFormat::Bmp => save_bmp(img, output_path),
+        OutputFormat::Ico => save_ico(img, output_path),
         OutputFormat::Original => Err("Cannot save as original format".to_string()),
     }
 }
@@ -183,7 +224,7 @@ fn save_jpeg(img: &DynamicImage, path: &Path, quality: u8) -> Result<u64, String
 }
 
 fn save_png(img: &DynamicImage, path: &Path) -> Result<u64, String> {
-    img.save(path)
+    img.save_with_format(path, image::ImageFormat::Png)
         .map_err(|e| format!("Failed to save PNG: {}", e))?;
 
     fs::metadata(path)
@@ -206,4 +247,40 @@ fn save_webp(img: &DynamicImage, path: &Path, quality: u8, lossless: bool) -> Re
     fs::write(path, &*webp_data).map_err(|e| format!("Failed to write WebP: {}", e))?;
 
     Ok(webp_data.len() as u64)
+}
+
+fn save_avif(img: &DynamicImage, path: &Path) -> Result<u64, String> {
+    img.save_with_format(path, image::ImageFormat::Avif)
+        .map_err(|e| format!("Failed to save AVIF: {}", e))?;
+
+    fs::metadata(path)
+        .map(|m| m.len())
+        .map_err(|e| e.to_string())
+}
+
+fn save_tiff(img: &DynamicImage, path: &Path) -> Result<u64, String> {
+    img.save_with_format(path, image::ImageFormat::Tiff)
+        .map_err(|e| format!("Failed to save TIFF: {}", e))?;
+
+    fs::metadata(path)
+        .map(|m| m.len())
+        .map_err(|e| e.to_string())
+}
+
+fn save_bmp(img: &DynamicImage, path: &Path) -> Result<u64, String> {
+    img.save_with_format(path, image::ImageFormat::Bmp)
+        .map_err(|e| format!("Failed to save BMP: {}", e))?;
+
+    fs::metadata(path)
+        .map(|m| m.len())
+        .map_err(|e| e.to_string())
+}
+
+fn save_ico(img: &DynamicImage, path: &Path) -> Result<u64, String> {
+    img.save_with_format(path, image::ImageFormat::Ico)
+        .map_err(|e| format!("Failed to save ICO: {}", e))?;
+
+    fs::metadata(path)
+        .map(|m| m.len())
+        .map_err(|e| e.to_string())
 }
