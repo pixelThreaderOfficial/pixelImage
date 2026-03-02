@@ -33,7 +33,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, description, icon, trend, isLoading }: StatCardProps) {
     return (
-        <Card className="relative overflow-hidden">
+        <Card className="py-0 relative overflow-hidden">
             <div className="flex flex-row items-center justify-between p-6 pb-2">
                 <p className="text-sm font-medium text-muted-foreground">
                     {title}
@@ -80,7 +80,7 @@ interface QuickActionProps {
 function QuickAction({ title, description, icon, to }: QuickActionProps) {
     return (
         <Link to={to}>
-            <Card className="group cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/50">
+            <Card className="py-0 group cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/50">
                 <div className="flex items-center gap-4 p-4">
                     <div className="h-12 w-12 rounded-xl bg-linear-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                         {icon}
@@ -209,7 +209,7 @@ export function Dashboard() {
                         </Link>
                     </Button>
                 </div>
-                <Card>
+                <Card className="py-0">
                     <div className="p-0">
                         {historyLoading ? (
                             <div className="p-4 space-y-4">

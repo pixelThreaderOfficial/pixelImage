@@ -117,8 +117,13 @@ export function Layout({ children }: LayoutProps) {
                                     return (
                                         <Tooltip key={item.to}>
                                             <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-                                            <TooltipContent side="right" sideOffset={10} className="font-semibold px-3 py-1.5 text-xs bg-popover/90 backdrop-blur-md">
-                                                {item.label}
+                                            <TooltipContent
+                                                side="right"
+                                                sideOffset={14}
+                                            >
+                                                <div className="flex items-center gap-1.5 font-semibold">
+                                                    {item.label}
+                                                </div>
                                             </TooltipContent>
                                         </Tooltip>
                                     );
