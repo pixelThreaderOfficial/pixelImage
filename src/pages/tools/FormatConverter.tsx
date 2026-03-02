@@ -19,13 +19,11 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Trash2, CheckCircle2, Archive, Images, SeparatorHorizontal } from "lucide-react";
+import { RefreshCw, Check, FileType, UploadIcon } from "lucide-react";
 import * as api from "@/lib/tauri-api";
 import { useLocation } from "react-router-dom";
 import { useImages } from "@/context";
 import { SelectedImagesAlert } from "@/components/SelectedImagesAlert";
-import { performSmartSave } from "@/lib/saving";
-import { Separator } from "@/components/ui/separator";
 import { useEffect } from "react";
 
 const FORMATS = [
@@ -252,7 +250,7 @@ export function FormatConverter() {
                                 onClick={handleFileSelect}
                             >
                                 <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                                    <Upload className="h-6 w-6 text-primary" />
+                                    <UploadIcon className="h-6 w-6 text-primary" />
                                 </div>
                                 <h3 className="font-semibold">Click to upload</h3>
                                 <p className="text-sm text-muted-foreground mt-1">
