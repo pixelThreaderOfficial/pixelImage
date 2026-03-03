@@ -7,7 +7,6 @@ import {
     BarChart3,
     History,
     Settings,
-    ImageIcon,
     ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -50,21 +49,28 @@ export function Layout({ children }: LayoutProps) {
                     )}
                 >
                     {/* Logo Section */}
-                    <div className="flex h-20 items-center justify-between px-6 border-b border-border/50">
+                    <div className={cn(
+                        "flex h-20 items-center border-b border-border/50 transition-all duration-300",
+                        collapsed ? "justify-center px-4" : "justify-between px-6"
+                    )}>
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={collapsed ? "collapsed" : "expanded"}
-                                initial={{ opacity: 0, x: -10 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -10 }}
-                                className={cn("flex items-center gap-3", collapsed && "justify-center w-full")}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                className={cn("flex items-center gap-3", collapsed && "justify-center")}
                             >
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/80 shadow-lg shadow-primary/20">
-                                    <ImageIcon className="h-6 w-6 text-primary-foreground" />
+                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl overflow-hidden shadow-lg shadow-primary/10">
+                                    <img
+                                        src="/icons/pixelImage-60x60.webp"
+                                        alt="pixelImage Logo"
+                                        className="h-full w-full object-cover"
+                                    />
                                 </div>
                                 {!collapsed && (
                                     <span className="text-xl font-bold tracking-tight bg-linear-to-br from-foreground to-foreground/70 bg-clip-text text-transparent">
-                                        PixelImage
+                                        pixelImage
                                     </span>
                                 )}
                             </motion.div>

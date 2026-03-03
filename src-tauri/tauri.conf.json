@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "PixelImage",
+  "productName": "pixelImage",
   "version": "0.1.0",
   "identifier": "com.pixelthreader.pixelimage",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "PixelImage - Image Optimization",
+        "title": "pixelImage - Image Optimization",
         "width": 1280,
         "height": 800,
         "minWidth": 800,
