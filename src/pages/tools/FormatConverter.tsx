@@ -45,7 +45,7 @@ export function FormatConverter() {
     const [isConverting, setIsConverting] = useState(false);
     const [results, setResults] = useState<api.ProcessedImage[]>([]);
     const location = useLocation();
-    const { uploadedImages, saveMode, setSaveMode } = useImages();
+    const { uploadedImages } = useImages();
     const fromUpload = location.state?.fromUpload;
 
     useEffect(() => {
