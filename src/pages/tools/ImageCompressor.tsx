@@ -14,6 +14,13 @@ import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import {
     Upload,
@@ -24,7 +31,8 @@ import {
     Trash2,
     CheckCircle2,
     Archive,
-    Images
+    Images,
+    AlertTriangle
 } from "lucide-react";
 import * as api from "@/lib/tauri-api";
 import { useLocation } from "react-router-dom";
@@ -49,6 +57,7 @@ export function ImageCompressor() {
     // Settings
     const [quality, setQuality] = useState<number>(80);
     const [lossless, setLossless] = useState<boolean>(false);
+    const [outputFormat, setOutputFormat] = useState<string>("original");
 
     // State
     const [isProcessing, setIsProcessing] = useState(false);
@@ -156,7 +165,7 @@ export function ImageCompressor() {
                     output_directory: outDir,
                     settings: {
                         quality,
-                        output_format: "original",
+                        output_format: outputFormat as any,
                         lossless,
                         resize_enabled: false,
                         preserve_aspect_ratio: true,
@@ -184,6 +193,12 @@ export function ImageCompressor() {
     const avgCompression = results.length > 0
         ? (results.reduce((acc, res) => acc + res.compression_ratio, 0) / results.length) * 100
         : 0;
+    const hasLosslessFiles = inputFiles.some(file => {
+        const ext = file.split('.').pop()?.toLowerCase();
+        return ['png', 'bmp', 'tiff', 'tif', 'ico'].includes(ext || '');
+    });
+
+    const isOutputLossless = outputFormat === 'png' || (outputFormat === 'original' && hasLosslessFiles);
 
     return (
         <div className="max-w-6xl mx-auto space-y-8">
@@ -260,9 +275,16 @@ export function ImageCompressor() {
                                                             </span>
                                                         </div>
                                                     ) : meta && (
-                                                        <p className="text-[11px] text-muted-foreground">
-                                                            {meta.width}x{meta.height} • {(meta.size / 1024).toFixed(1)} KB
-                                                        </p>
+                                                        <div className="space-y-1">
+                                                            <p className="text-[11px] text-muted-foreground">
+                                                                {meta.width}x{meta.height} • {(meta.size / 1024).toFixed(1)} KB
+                                                            </p>
+                                                            {['png', 'bmp', 'tiff', 'tif', 'ico'].includes(meta.format.toLowerCase()) && outputFormat === 'original' && (
+                                                                <span className="inline-block text-[9px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded">
+                                                                    Lossless (Convert format to compress)
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     )}
                                                 </div>
                                             </div>
@@ -310,6 +332,44 @@ export function ImageCompressor() {
                                 <p className="text-[11px] text-muted-foreground">
                                     Higher quality results in larger file sizes. Recommended: 80%.
                                 </p>
+                            </div>
+
+                            <div className="space-y-2 border-t pt-6">
+                                <Label className="text-base">Output Format</Label>
+                                <Select
+                                    value={outputFormat}
+                                    onValueChange={(val) => {
+                                        setOutputFormat(val);
+                                        if (val === 'png') {
+                                            setLossless(true);
+                                        } else if (val === 'jpeg' || val === 'webp' || val === 'avif') {
+                                            setLossless(false);
+                                        }
+                                    }}
+                                    disabled={isProcessing}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select format" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="original">Keep Original</SelectItem>
+                                        <SelectItem value="webp">WebP (Optimized)</SelectItem>
+                                        <SelectItem value="jpeg">JPEG</SelectItem>
+                                        <SelectItem value="png">PNG (Lossless)</SelectItem>
+                                        <SelectItem value="avif">AVIF (Modern)</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <p className="text-[11px] text-muted-foreground">
+                                    Change the output file format. Converting to WebP or JPEG is highly recommended to compress PNG images.
+                                </p>
+                                {isOutputLossless && (
+                                    <div className="p-3 mt-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-xs flex gap-2">
+                                        <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                                        <div>
+                                            <span className="font-semibold">Lossless Format:</span> PNG, BMP, TIFF, and ICO are lossless. The quality slider has no effect. Change the <strong>Output Format</strong> to WebP, JPEG, or AVIF to compress them.
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex items-center justify-between border-t pt-6">

@@ -201,7 +201,7 @@ fn save_compressed_image(
         OutputFormat::Jpeg => save_jpeg(img, output_path, settings.quality),
         OutputFormat::Png => save_png(img, output_path),
         OutputFormat::WebP => save_webp(img, output_path, settings.quality, settings.lossless),
-        OutputFormat::Avif => save_avif(img, output_path),
+        OutputFormat::Avif => save_avif(img, output_path, settings.quality),
         OutputFormat::Tiff => save_tiff(img, output_path),
         OutputFormat::Bmp => save_bmp(img, output_path),
         OutputFormat::Ico => save_ico(img, output_path),
@@ -224,8 +224,16 @@ fn save_jpeg(img: &DynamicImage, path: &Path, quality: u8) -> Result<u64, String
 }
 
 fn save_png(img: &DynamicImage, path: &Path) -> Result<u64, String> {
-    img.save_with_format(path, image::ImageFormat::Png)
-        .map_err(|e| format!("Failed to save PNG: {}", e))?;
+    let file = fs::File::create(path).map_err(|e| e.to_string())?;
+    let writer = BufWriter::new(file);
+
+    let encoder = image::codecs::png::PngEncoder::new_with_quality(
+        writer,
+        image::codecs::png::CompressionType::Best,
+        image::codecs::png::FilterType::Adaptive,
+    );
+    img.write_with_encoder(encoder)
+        .map_err(|e| format!("Failed to encode PNG: {}", e))?;
 
     fs::metadata(path)
         .map(|m| m.len())
@@ -233,15 +241,26 @@ fn save_png(img: &DynamicImage, path: &Path) -> Result<u64, String> {
 }
 
 fn save_webp(img: &DynamicImage, path: &Path, quality: u8, lossless: bool) -> Result<u64, String> {
-    let rgba = img.to_rgba8();
-    let (width, height) = rgba.dimensions();
+    let has_alpha = img.color().has_alpha();
 
-    let encoder = webp::Encoder::from_rgba(&rgba, width, height);
-
-    let webp_data = if lossless {
-        encoder.encode_lossless()
+    let webp_data = if has_alpha {
+        let rgba = img.to_rgba8();
+        let (width, height) = rgba.dimensions();
+        let encoder = webp::Encoder::from_rgba(&rgba, width, height);
+        if lossless {
+            encoder.encode_lossless()
+        } else {
+            encoder.encode(quality as f32)
+        }
     } else {
-        encoder.encode(quality as f32)
+        let rgb = img.to_rgb8();
+        let (width, height) = rgb.dimensions();
+        let encoder = webp::Encoder::from_rgb(&rgb, width, height);
+        if lossless {
+            encoder.encode_lossless()
+        } else {
+            encoder.encode(quality as f32)
+        }
     };
 
     fs::write(path, &*webp_data).map_err(|e| format!("Failed to write WebP: {}", e))?;
@@ -249,9 +268,13 @@ fn save_webp(img: &DynamicImage, path: &Path, quality: u8, lossless: bool) -> Re
     Ok(webp_data.len() as u64)
 }
 
-fn save_avif(img: &DynamicImage, path: &Path) -> Result<u64, String> {
-    img.save_with_format(path, image::ImageFormat::Avif)
-        .map_err(|e| format!("Failed to save AVIF: {}", e))?;
+fn save_avif(img: &DynamicImage, path: &Path, quality: u8) -> Result<u64, String> {
+    let file = fs::File::create(path).map_err(|e| e.to_string())?;
+    let writer = BufWriter::new(file);
+
+    let encoder = image::codecs::avif::AvifEncoder::new_with_speed_quality(writer, 4, quality);
+    img.write_with_encoder(encoder)
+        .map_err(|e| format!("Failed to encode AVIF: {}", e))?;
 
     fs::metadata(path)
         .map(|m| m.len())

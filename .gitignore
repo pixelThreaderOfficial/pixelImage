@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Temporary scraper TODOs
+scraper_todo.md
+architecture.md
